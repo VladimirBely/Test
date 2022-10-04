@@ -1,0 +1,101 @@
+'use strict';
+
+let detail = {
+    length: 0,
+    width: 0,
+    lt: { radius: 0 },
+    lb: { radius: 0 },
+    rt: { radius: 50 },
+    rb: { radius: 0 }
+};
+
+{
+    const heightInput = document.getElementById("heightInput");
+    const widthInput = document.getElementById("widthInput");
+    const rightAngleInput = document.getElementById("rightAngleInput");
+    const rotateZ = document.getElementById("rotateZ");
+    const drawButton = document.getElementById("draw-element");
+    const clearButton = document.getElementById("clear-btn");
+    const canvas = document.getElementById("canvas");
+    const context = canvas.getContext('2d');
+
+    rightAngleInput.addEventListener('keyup', () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        detail.rt.radius = +rightAngleInput.value;
+        drawDetail(detail);
+    });
+
+    drawButton.addEventListener("click", () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        detail.lb.radius = 0;
+        detail.rb.radius = 0;
+        detail.lt.radius = 0;
+        if (widthInput.value > canvas.clientHeight - 100 && heightInput.value > canvas.clientHeight - 100) {
+            alert('Слишком большие размеры фигуры! Максимальный размер 700 х 700');
+            return;
+        } else {
+            detail.width = +widthInput.value;
+            detail.length = +heightInput.value;
+        }
+        detail.rt.radius = +rightAngleInput.value;
+        drawDetail(detail);
+    });
+
+    rotateZ.addEventListener("click", () => {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+
+        //rotateDetail(object) - вармант 1;
+        rotateObject(detail); // - вариант 2;
+        drawDetail(detail);
+    });
+
+    clearButton.addEventListener("click", () => {
+        widthInput.value = '';
+        heightInput.value = '';
+        rightAngleInput.value = '';
+    });
+
+    function drawDetail(object) {
+        context.beginPath();
+        context.roundRect(
+            canvas.clientWidth / 2 - object.length / 2,
+            canvas.clientHeight / 2 - object.width / 2,
+            object.length,
+            object.width,
+            [object.lt.radius, object.rt.radius, object.rb.radius, object.lb.radius]);
+        context.closePath();
+        context.stroke();
+    }
+
+    //**Вариант с изменением объекта detail */
+
+    function rotateObject(object) {
+        [object.length, object.width] = [object.width, object.length];
+        if (object.rt.radius !== 0) {
+            object.rb.radius = object.rt.radius;
+            object.rt.radius = 0;
+        } else if (object.rb.radius !== 0) {
+            object.lb.radius = object.rb.radius;
+            object.rb.radius = 0;
+        } else if (object.lb.radius !== 0) {
+            object.lt.radius = object.lb.radius;
+            object.lb.radius = 0;
+        } else if (object.lt.radius !== 0) {
+            object.rt.radius = object.lt.radius;
+            object.lt.radius = 0;
+        } else alert('Что-то пошло не так!');
+    }
+
+    //** Вариант без изменения объекта detail **//
+
+    // function rotateDetail(object) {
+    //     context.beginPath();
+    //     context.translate((canvas.clientWidth / 2 - object.length / 2) + object.length / 2, (canvas.clientHeight / 2 - object.width / 2) + object.width / 2);
+    //     context.rotate(Math.PI / 2);
+    //     context.translate(-((canvas.clientWidth / 2 - object.length / 2) + object.length / 2), -((canvas.clientHeight / 2 - object.width / 2) + object.width / 2));
+    //     context.roundRect(canvas.clientWidth / 2 - object.length / 2, canvas.clientHeight / 2 - object.width / 2, object.length, object.width, [0, object.rt.radius, 0, 0]);
+    //     context.closePath();
+    //     context.stroke();
+    //     console.log(detail);
+    // }
+}
