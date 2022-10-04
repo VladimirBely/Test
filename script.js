@@ -22,7 +22,7 @@ let detail = {
     rightAngleInput.addEventListener('keyup', () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
         detail.rt.radius = +rightAngleInput.value;
-        drawDetail(detail);
+        drawDetail();
     });
 
     drawButton.addEventListener("click", () => {
@@ -30,7 +30,7 @@ let detail = {
         detail.lb.radius = 0;
         detail.rb.radius = 0;
         detail.lt.radius = 0;
-        if (widthInput.value > canvas.clientHeight - 100 && heightInput.value > canvas.clientHeight - 100) {
+        if (widthInput.value > canvas.clientHeight - 100 || heightInput.value > canvas.clientHeight - 100) {
             alert('Слишком большие размеры фигуры! Максимальный размер 700 х 700');
             return;
         } else {
@@ -44,9 +44,9 @@ let detail = {
     rotateZ.addEventListener("click", () => {
         context.clearRect(0, 0, canvas.width, canvas.height);
 
-        //rotateDetail(object) - вармант 1;
-        rotateObject(detail); // - вариант 2;
-        drawDetail(detail);
+        //rotateDetail() - вармант 1;
+        rotateObject(); // - вариант 2;
+        drawDetail();
     });
 
     clearButton.addEventListener("click", () => {
@@ -55,34 +55,34 @@ let detail = {
         rightAngleInput.value = '';
     });
 
-    function drawDetail(object) {
+    function drawDetail() {
         context.beginPath();
         context.roundRect(
-            canvas.clientWidth / 2 - object.length / 2,
-            canvas.clientHeight / 2 - object.width / 2,
-            object.length,
-            object.width,
-            [object.lt.radius, object.rt.radius, object.rb.radius, object.lb.radius]);
+            canvas.clientWidth / 2 - detail.length / 2,
+            canvas.clientHeight / 2 - detail.width / 2,
+            detail.length,
+            detail.width,
+            [detail.lt.radius, detail.rt.radius, detail.rb.radius, detail.lb.radius]);
         context.closePath();
         context.stroke();
     }
 
     //**Вариант с изменением объекта detail */
 
-    function rotateObject(object) {
-        [object.length, object.width] = [object.width, object.length];
-        if (object.rt.radius !== 0) {
-            object.rb.radius = object.rt.radius;
-            object.rt.radius = 0;
-        } else if (object.rb.radius !== 0) {
-            object.lb.radius = object.rb.radius;
-            object.rb.radius = 0;
-        } else if (object.lb.radius !== 0) {
-            object.lt.radius = object.lb.radius;
-            object.lb.radius = 0;
-        } else if (object.lt.radius !== 0) {
-            object.rt.radius = object.lt.radius;
-            object.lt.radius = 0;
+    function rotateObject() {
+        [detail.length, detail.width] = [detail.width, detail.length];
+        if (detail.rt.radius !== 0) {
+            detail.rb.radius = detail.rt.radius;
+            detail.rt.radius = 0;
+        } else if (detail.rb.radius !== 0) {
+            detail.lb.radius = detail.rb.radius;
+            detail.rb.radius = 0;
+        } else if (detail.lb.radius !== 0) {
+            detail.lt.radius = detail.lb.radius;
+            detail.lb.radius = 0;
+        } else if (detail.lt.radius !== 0) {
+            detail.rt.radius = detail.lt.radius;
+            detail.lt.radius = 0;
         } else alert('Что-то пошло не так!');
     }
 
